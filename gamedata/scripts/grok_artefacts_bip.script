@@ -3,6 +3,7 @@
 -- DEBUG
 ----------------------------------------
 local modname = "Passive Artefact Detector"
+local DEBUG = false
 
 local function print_table (tbl, indent)
 	local g_type = type
@@ -58,6 +59,7 @@ end
 
 
 local function log(log_type, output)
+
 	if not output then
 		utils_data.debug_write("[" .. modname .. "] "..log_type..": ".."(nil)")
 	elseif (type(output) == "table") then
@@ -69,6 +71,8 @@ local function log(log_type, output)
 end
 
 function debug(output)
+	if not DEBUG then return end
+
 	log("DEBUG", output)
 end
 
@@ -118,6 +122,7 @@ local detectors = {
 }
 
 -- add junk artefacts as well
+-- moved to passive_detector_artefact_tiers.ltx
 local af_by_tiers = { }
 
 function actor_on_first_update()	
@@ -242,7 +247,8 @@ end
 
 
 function on_game_start()
-	local af_tiers_ini = ini_file("items\\settings\\passive_detector_artefact_tiers.ltx")
+	-- load artefact tiers from config
+	local af_tiers_ini = ini_file("items\\settings\\passive_detector_artefact_tiers.ltx") 
 	af_by_tiers = utils_data.collect_section(af_tiers_ini, "artefact_teirs", true)
 	debug("af tiers:")
 	print_table(af_by_tiers)
